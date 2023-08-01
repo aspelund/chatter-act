@@ -121,6 +121,8 @@ Let's take a look at the `get_tasks` function to see how these parts work togeth
 
 1. Description file (`get_tasks_description.py`):
 
+This file contains a description of the get_tasks function. It serves as metadata that OpenAI uses to understand how to interact with the function. Here's what it looks like:
+
 ```python
 get_tasks_description = {
     'name': 'get_tasks',
@@ -137,7 +139,9 @@ get_tasks_description = {
 }
 ```
 
-Process file (get_tasks_process.py):
+2. Process file (`get_tasks_process.py`):
+
+The process file is responsible for handling the execution flow of the get_tasks function. It processes the input parameters and then calls the underlying function with these processed parameters.
 
 ```python
 
@@ -151,7 +155,8 @@ def arg_process(arguments):
 get_tasks_process = process('get_tasks', get_tasks, arg_process)
 ```
 
-Function file (get_tasks.py):
+3. Function file (`get_tasks.py`):
+   The function file contains the core logic for the get_tasks function. In this case, it retrieves tasks from the database that are associated with a specific epic and are not yet completed.
 
 ```python
 
@@ -162,4 +167,4 @@ def get_tasks(epicId):
     return {'role': 'function', 'name': 'get_tasks', 'content': str([{'id': str(task.id), 'name': task.name} for task in tasks])}
 ```
 
-In this example, the description file provides metadata about the get_tasks function. The process file uses this metadata to handle the processing of arguments and to call the function. The function file contains the logic that retrieves the tasks from the database.
+In summary, the description file acts as an interface, telling OpenAI about the existence and usage of the `get_tasks` function. The process file then coordinates the execution of this function whenever OpenAI invokes it via ChatterAct. Finally, the function file encapsulates the business logic, performing the actual task of fetching the tasks from the database.
