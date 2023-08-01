@@ -1,6 +1,14 @@
 # ChatterAct
 
-ChatterAct is a Python package that ...
+ChatterAct is a Python package designed to streamline and simplify the integration of OpenAI's GPT-4 model into your applications. This package offers a minimalistic yet powerful solution that extends the functionality of OpenAI's function API. It stands as a vital tool for developers who wish to easily harness the capabilities of AI in creative and innovative ways.
+
+Without introducing a cumbersome framework, ChatterAct provides the necessary tools to make the most out of GPT-4's conversational model. It enables developers to conveniently convert AI's understanding of natural language into executable Python commands.
+
+ChatterAct also incorporates a built-in mechanism for handling function execution pipelines. This feature makes it easier to manage and extend the AI's ability to perform various tasks, such as managing files, running scripts, interacting with web APIs, and many more.
+
+With a focus on simplicity and flexibility, ChatterAct allows developers to easily introduce custom functionality. This gives you the power to define your own command-action pairs for the AI assistant, tailoring its functionality to suit your specific needs.
+
+Whether you are aiming to build a conversational agent, automate routine tasks, or explore novel ways of leveraging AI, ChatterAct provides an accessible and straightforward approach to embedding AI into your projects. Ready to begin? Let's get started!
 
 ## A simple example
 
