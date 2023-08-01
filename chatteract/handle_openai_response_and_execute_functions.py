@@ -89,6 +89,18 @@ def run_process_pipeline(pipeline, message_dict, res):
             break
     return message_dict, res
 
+def process(name, func, arg_process):
+    def inner(message_dict, res):
+        if res is not None:
+            return message_dict, res
+        if message_dict.get("name") == name:
+            args = arg_process(message_dict.get('arguments', []))
+            if args:
+                return message_dict, func(*args)
+            else:
+                return message_dict, func()
+        return message_dict, res
+    return inner
 
 class FunctionExecutionError(Exception):
     """
