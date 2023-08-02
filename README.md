@@ -4,6 +4,14 @@ ChatterAct is a Python package developed to streamline the integration of OpenAI
 
 Basically, what you need to do to get started is to follow a simple pattern for the functions that you want to expose to GPT, and to use the wrapper for the GPT calling.
 
+## Installation
+
+Use pip to install it and then try one of the examples described below:
+
+```
+pip install chatteract
+```
+
 ## Background
 
 With the function calling capability of the models `gpt-4-0613` and `gpt-3.5-turbo-0613` it is simple to make it easy to integrate GPT into your own applications. With it, you can expose the AI to your own functions without having to ask it to provide the output in the form of json (as this is done automatically).
