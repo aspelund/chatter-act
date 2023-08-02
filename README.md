@@ -2,19 +2,30 @@
 
 ChatterAct is a Python package designed to streamline and simplify the integration of OpenAI's GPT-4 model into your applications. This package offers a minimalistic yet powerful solution that extends the functionality of OpenAI's function API. It stands as a vital tool for developers who wish to easily harness the capabilities of AI in creative and innovative ways.
 
-Without introducing a cumbersome framework, ChatterAct provides the necessary tools to make the most out of GPT-4's conversational model. It enables developers to conveniently convert AI's understanding of natural language into executable Python commands.
+ChatterAct provides the necessary tools to convert the AI's understanding of natural language into executable Python commands. It incorporates a built-in mechanism for handling function execution pipelines, making it easier to manage and extend the AI's ability to perform various tasks, such as managing files, running scripts, interacting with web APIs, and more.
 
-ChatterAct also incorporates a built-in mechanism for handling function execution pipelines. This feature makes it easier to manage and extend the AI's ability to perform various tasks, such as managing files, running scripts, interacting with web APIs, and many more.
+Focusing on simplicity and flexibility, ChatterAct allows developers to introduce custom functionality, empowering them to define their own command-action pairs for the AI assistant, tailoring its functionality to suit specific needs.
 
-With a focus on simplicity and flexibility, ChatterAct allows developers to easily introduce custom functionality. This gives you the power to define your own command-action pairs for the AI assistant, tailoring its functionality to suit your specific needs.
+## Key Functions
 
-Whether you are aiming to build a conversational agent, automate routine tasks, or explore novel ways of leveraging AI, ChatterAct provides an accessible and straightforward approach to embedding AI into your projects. Ready to begin? Let's get started!
+ChatterAct mainly exposes three important functions:
 
-## A simple example
+1. `process`: Used to define a process function for a specific task.
+2. `prepare_pipeline`: Helps in preparing the AI pipeline with your function descriptions and process functions.
+3. `handle_openai_response_and_execute_functions`: This is the most important function which handles the execution of your AI pipeline and processes responses from the OpenAI API.
 
-Let's start by exposing a simple hello_world function to openai:
+## A Simple Example
+
+Let's start by exposing a simple `hello_world` function to OpenAI:
 
 ```python
+from chatteract import process, prepare_pipeline, handle_openai_response_and_execute_functions
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
 # This is the function to be executed
 def hello_world(name):
     return {'role': 'function', 'name': 'hello_world', 'content': f"Hello, {name}!"}
@@ -34,26 +45,13 @@ hello_world_description = {
     }
 }
 
-# This is the process function
-def hello_world_process(arguments):
+# This is the process function, which processes arguments for the hello_world function
+def hello_world_arg_process(arguments):
     name = arguments.get('name')
     return (name, )
 
-```
-
-All functions that we expose requires three things - the function that executes whatever we are exposing to the AI, a description of the function and a process function in order for us to pick it up with the chatter-act package.
-
-A corresponding main function could look like this:
-
-```python
-from dotenv import load_dotenv
-import os
-
-# Load environment variables
-load_dotenv()
-
-from chatter_act import prepare_pipeline, process_openai_response
-from ai_functions.hello_world import hello_world_description, hello_world_process
+# Use the process function from ChatterAct to create the hello_world_process function
+hello_world_process = process('hello_world', hello_world, hello_world_arg_process)
 
 # Prepare the AI pipeline
 def get_pipeline():
@@ -89,7 +87,7 @@ openai_settings = {
 
 def main():
     pipeline = get_pipeline()
-    response = process_openai_response(messages, pipeline, openai_settings)
+    response = handle_openai_response_and_execute_functions(messages, pipeline, openai_settings)
     print(response[-1]['content'])
 
 if __name__ == "__main__":
@@ -97,74 +95,48 @@ if __name__ == "__main__":
 
 ```
 
-This script defines a simple function hello_world that takes a name and returns a greeting, along with a function description and a process function to process arguments.
+This script defines a simple function `hello_world` that takes a name and returns a greeting, along with a function description and a process function to process arguments.
 
-The get_pipeline() function prepares the AI pipeline with the hello_world function and its description and process function.
+The `get_pipeline()` function prepares the AI pipeline with the `hello_world` function, its description, and process function.
 
-In the main() function, we simulate a message from the OpenAI GPT model that requests a call to the hello_world function with 'Alice' as the argument.
+In the `main()` function, we simulate a message from the OpenAI GPT model that requests a call to the `hello_world` function with 'Alice' as the argument.
 
-The main() function then calls process_openai_response() with the message and the pipeline, which should process the function call and print the greeting.
+The `main()` function then calls `handle_openai_response_and_execute_functions()` with the message and the pipeline, which should process the function call and print the greeting.
 
 ## Function Structure
 
 Each function in ChatterAct has three main components:
 
-1. The description file: Contains metadata about the function, including its name, description, and the parameters it accepts. This is used for generating documentation and providing context about the function to the user.
+1. The description: Contains metadata about the function, including its name, description, and the parameters it accepts. This is used for generating documentation and providing context about the function to the user.
 
-2. The process file: Handles the processing of arguments for the function and invokes the function with these arguments.
+2. The process function: Handles the processing of arguments for the function and invokes the function with these arguments.
 
-3. The function file: This is where the actual work of the function happens.
+3. The function: This is where the actual work of the function happens.
 
-### Example
+Please refer to the simple example above to understand how these components work together.
 
-Let's take a look at the `get_tasks` function to see how these parts work together:
+## The Process Function
 
-1. Description file (`get_tasks_description.py`):
-
-This file contains a description of the get_tasks function. It serves as metadata that OpenAI uses to understand how to interact with the function. Here's what it looks like:
+The `process` function is a key part of preparing your functions for integration with ChatterAct. It is used to wrap your function and create a process function that handles argument processing and function invocation. Here is an example of how to use it:
 
 ```python
-get_tasks_description = {
-    'name': 'get_tasks',
-    'description': 'Get all tasks associated with a particular epic that are not yet completed.',
-    'parameters': {
-        'type': 'object',
-        'properties': {
-            'epic_id': {
-                'type': 'string',
-                'description': 'The id of the epic.'
-            }
-        }
-    }
-}
-```
-
-2. Process file (`get_tasks_process.py`):
-
-The process file is responsible for handling the execution flow of the get_tasks function. It processes the input parameters and then calls the underlying function with these processed parameters.
-
-```python
-
-from ...process import process
-from .get_tasks import get_tasks
+from chatteract import process
+from ai_functions.get_epic import get_epic
 
 def arg_process(arguments):
+    # Process the arguments.
     epic_id = arguments.get('epic_id')
     return (epic_id, )
 
-get_tasks_process = process('get_tasks', get_tasks, arg_process)
+get_epic_process = process('get_epic', get_epic, arg_process)
 ```
 
-3. Function file (`get_tasks.py`):
-   The function file contains the core logic for the get_tasks function. In this case, it retrieves tasks from the database that are associated with a specific epic and are not yet completed.
+In this example, the `get_epic` function is designed to retrieve an epic (a collection of related tasks) based on its `epic_id`.
 
-```python
+The `arg_process` function is a simple function that takes the arguments from the AI's function call, extracts the `epic_id`, and returns it as a tuple.
 
-from mongo_models.task import Task
+The `process` function is then used to wrap `get_epic` and `arg_process` together into a new function, `get_epic_process`.
 
-def get_tasks(epicId):
-    tasks = Task.objects(epic=epicId, completed=False)
-    return {'role': 'function', 'name': 'get_tasks', 'content': str([{'id': str(task.id), 'name': task.name} for task in tasks])}
-```
+The resulting `get_epic_process` function can be used in the pipeline to handle any function calls from the AI to `get_epic`.
 
-In summary, the description file acts as an interface, telling OpenAI about the existence and usage of the `get_tasks` function. The process file then coordinates the execution of this function whenever OpenAI invokes it via ChatterAct. Finally, the function file encapsulates the business logic, performing the actual task of fetching the tasks from the database.
+Remember to include this process function when you set up your pipeline with `prepare_pipeline`. This pipeline should be passed as an argument when calling `handle_openai_response_and_execute_functions` to process the AI's function calls.
