@@ -1,5 +1,5 @@
 import json
-from send_api_request import send_api_request
+from .send_api_request import send_api_request
 
 
 def is_function_call(response):

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='ChatterAct',  # The name of your package
+    name='chatteract',  # The name of your package
     version='0.1',  # The current version of your package
     packages=find_packages(),  # List of all python packages to include. find_packages() automatically detects all packages and subpackages.
     author='Mattias Aspelund',  # Your name    
