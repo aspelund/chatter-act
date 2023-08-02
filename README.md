@@ -1,6 +1,26 @@
 # ChatterAct
 
-ChatterAct is a Python package developed to streamline the integration of OpenAI's GPT-4 model into your applications. Its primary goal is to provide a simplified, yet flexible mechanism for exposing numerous functions to the AI model with minimal effort. ChatterAct handles the execution and piping, enabling you to start simple with one or two AI functions and expand as the complexity of your project grows.
+ChatterAct is a Python package developed to streamline the integration of OpenAI's GPT-4 function calling capabilities into your applications. Its primary goal is to provide a simplified, yet flexible mechanism for exposing numerous functions to the AI model with minimal effort. ChatterAct handles the execution and piping, enabling you to start simple with one or two AI functions and expand as the complexity of your project grows.
+
+Basically, what you need to do to get started is to follow a simple pattern for the functions that you want to expose to GPT, and to use the wrapper for the GPT calling.
+
+## Background
+
+With the function calling capability of the models `gpt-4-0613` and `gpt-3.5-turbo-0613` it is simple to make it easy to integrate GPT into your own applications. With it, you can expose the AI to your own functions without having to ask it to provide the output in the form of json (as this is done automatically).
+
+When implementing some initial functions, my own first project's integration to the API got a bit unmanagable. At the same time I wanted to keep my integrations lightweight and not dependent on large automation frameworks for LLM's. Given this I created this lightweight solution that makes it easy to create new functions that GPT can call to talk directly to my applications.
+
+It was also obvious that the API's for this new functionality was a bit unstable, as I could see that I got responses that included invalid json and also frequent 500 responses from the API.
+
+In my small package, I have built in functionality for this.
+
+- An easy way to expose your own functions to GPT
+- A simple pattern that makes it easy to extend the number of functions in a good way.
+- Handling of responses that aren't valid
+- Handling of 500 responses from the API.
+- Handling of token counting in API requests.
+
+In short, chatter-act is a package that makes it easy to get started with GPT function calling, and grow the number of exposed functions without seeing the project become unmanageble.
 
 ## Key Functions
 
@@ -138,3 +158,7 @@ hello_world_ai_function = get_ai_function('hello_world', hello_world, hello_worl
 ```
 
 This code block creates an AI function `hello_world`, which can be used in `handle_openai_response_and_execute_functions` to process and handle OpenAI's responses.
+
+# Collaboration
+
+if you want to help out, feel free to raise tickets or create your own pull requests. I am also planning to add some handy out of the box functions.
