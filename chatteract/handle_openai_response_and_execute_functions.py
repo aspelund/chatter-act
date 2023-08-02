@@ -1,3 +1,4 @@
+# chatteract/handle_openai_response_and_execute_functions.py
 import json
 from .send_api_request import send_api_request
 
@@ -9,7 +10,8 @@ def is_function_call(response):
         return False
 
 
-def handle_openai_response_and_execute_functions(messages, pipeline, api_settings):
+def handle_openai_response_and_execute_functions(messages, ai_functions, api_settings):
+    pipeline = prepare_pipeline(ai_functions)
     new_messages = []
     max_retries = api_settings.get("max_retries", 3)
     while True:
@@ -101,6 +103,9 @@ def process(name, func, arg_process):
                 return message_dict, func()
         return message_dict, res
     return inner
+
+def get_ai_function(name, func, arg_process, description):
+    return (process(name, func, arg_process), description)
 
 class FunctionExecutionError(Exception):
     """
