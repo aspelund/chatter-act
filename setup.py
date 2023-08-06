@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='chatteract',  # The name of your package
-    version='0.1',  # The current version of your package
+    version='0.2',  # The current version of your package
     packages=find_packages(),  # List of all python packages to include. find_packages() automatically detects all packages and subpackages.
     author='Mattias Aspelund',  # Your name    
     description='A package to handle OpenAI responses and execute function calls.',  # A brief description of your package

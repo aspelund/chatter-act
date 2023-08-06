@@ -14,7 +14,11 @@ def handle_openai_response_and_execute_functions(messages, ai_functions, api_set
     pipeline = prepare_pipeline(ai_functions)
     new_messages = []
     max_retries = api_settings.get("max_retries", 3)
+    max_consecutive_function_calls = api_settings.get("max_consecutive_function_calls", 3)
+    num_cons_function_calls = 0
     while True:
+        if num_cons_function_calls >= max_consecutive_function_calls:
+            raise AIFunctionCallsExceedingMaxConsecutiveError()
         for i in range(max_retries):
             try:
                 with (open("logs/messages.txt", "w")) as f:
@@ -31,6 +35,7 @@ def handle_openai_response_and_execute_functions(messages, ai_functions, api_set
                             o_response, pipeline['processes'])
                         messages.append(result)
                         new_messages.append(result)
+                        num_cons_function_calls += 1
                     except FunctionExecutionError as fee:
                         raise fee  # Re-raise the exception to be handled by the caller
                 else:
@@ -128,6 +133,11 @@ class FunctionResultNoneError(Exception):
         super().__init__(self,
                          f"Function call did not complete successfully. Result is None for function {function_name}.")
 
+
+class AIFunctionCallsExceedingMaxConsecutiveError(Exception):
+    def __init__(self, max_consecutive_function_calls):
+        super().__init__(self,
+                         f"Number of consecutive AI function calls exceeded the maximum of {max_consecutive_function_calls}.")
 
 class OpenAIResponseError(Exception):
     """Custom exception to indicate an error in the OpenAI response."""

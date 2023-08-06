@@ -83,11 +83,13 @@ openai_settings = {
     "url": "https://api.openai.com/v1/chat/completions",
     "max_retries": 3,
     "retry_delay": 3,
+    "max_consecutive_function_calls": 1,
     "max_tokens": 8000,
     "headers": {
         "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
     }
 }
+
 
 # Start the conversation with a system message
 messages = [
@@ -166,6 +168,28 @@ hello_world_ai_function = get_ai_function('hello_world', hello_world, hello_worl
 ```
 
 This code block creates an AI function `hello_world`, which can be used in `handle_openai_response_and_execute_functions` to process and handle OpenAI's responses.
+
+## OpenAI Settings
+
+Here is an example openai settings that works.
+
+```
+openai_settings = {
+    "model": "gpt-4-0613",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "max_retries": 3,
+    "retry_delay": 3,
+    "max_consecutive_function_calls": 1,
+    "max_tokens": 8000,
+    "headers": {
+        "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+    }
+}
+```
+
+`max_retries` is the number of times the script tries to call the API when the response contains badly formatted json in the arguments.
+`retry_delay` is the number of seconds that the AI should wait if an error occurs before trying again.
+`max_consecutive_function_calls` is used to make sure that the AI doesn't end up in a strange loop. This sometimes happens, and the AI sort of start giving itself content together with the function call, and leads to the AI making a new function call based on its own instructions.
 
 # Collaboration
 
