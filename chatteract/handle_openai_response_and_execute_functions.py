@@ -9,6 +9,11 @@ def is_function_call(response):
     else:
         return False
 
+def execute_function_call_on_pipeline(ai_functions, message):
+    pipeline = prepare_pipeline(ai_functions)
+
+    return execute_function_call(
+        message, pipeline['processes'])
 
 def handle_openai_response_and_execute_functions(messages, ai_functions, api_settings):
     pipeline = prepare_pipeline(ai_functions)
@@ -18,7 +23,7 @@ def handle_openai_response_and_execute_functions(messages, ai_functions, api_set
     num_cons_function_calls = 0
     while True:
         if num_cons_function_calls >= max_consecutive_function_calls:
-            raise AIFunctionCallsExceedingMaxConsecutiveError()
+            raise AIFunctionCallsExceedingMaxConsecutiveError(num_cons_function_calls)
         for i in range(max_retries):
             try:
                 with (open("logs/messages.txt", "w")) as f:
