@@ -179,6 +179,7 @@ openai_settings = {
     "url": "https://api.openai.com/v1/chat/completions",
     "max_retries": 3,
     "retry_delay": 3,
+    "break_after_function_call": true
     "max_consecutive_function_calls": 1,
     "max_tokens": 8000,
     "headers": {
@@ -189,6 +190,7 @@ openai_settings = {
 
 `max_retries` is the number of times the script tries to call the API when the response contains badly formatted json in the arguments.
 `retry_delay` is the number of seconds that the AI should wait if an error occurs before trying again.
+`break_after_function_call` is a flag that immediately exists after a function call.
 `max_consecutive_function_calls` is used to make sure that the AI doesn't end up in a strange loop. This sometimes happens, and the AI sort of start giving itself content together with the function call, and leads to the AI making a new function call based on its own instructions.
 
 # Collaboration

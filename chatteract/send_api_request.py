@@ -5,6 +5,10 @@ import time
 import json
 import tiktoken
 
+def get_token_length(text):
+    encoding = tiktoken.get_encoding("cl100k_base")
+    return len(encoding.encode(text))
+
 
 def get_token_compliant_messages(original_messages, max_tokens):
     encoding = tiktoken.get_encoding("cl100k_base")

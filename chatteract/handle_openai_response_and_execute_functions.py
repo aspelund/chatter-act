@@ -20,8 +20,11 @@ def handle_openai_response_and_execute_functions(messages, ai_functions, api_set
     new_messages = []
     max_retries = api_settings.get("max_retries", 3)
     max_consecutive_function_calls = api_settings.get("max_consecutive_function_calls", 3)
+    break_after_function_call = api_settings.get("break_after_function_call", True)
     num_cons_function_calls = 0
     while True:
+        if break_after_function_call and num_cons_function_calls > 0:
+            break
         if num_cons_function_calls >= max_consecutive_function_calls:
             raise AIFunctionCallsExceedingMaxConsecutiveError(num_cons_function_calls)
         for i in range(max_retries):
@@ -41,6 +44,8 @@ def handle_openai_response_and_execute_functions(messages, ai_functions, api_set
                         messages.append(result)
                         new_messages.append(result)
                         num_cons_function_calls += 1
+                        if break_after_function_call:
+                            break
                     except FunctionExecutionError as fee:
                         raise fee  # Re-raise the exception to be handled by the caller
                 else:
